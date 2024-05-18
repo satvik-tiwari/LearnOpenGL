@@ -1,0 +1,3 @@
+﻿Application.obj : error LNK2019: unresolved external symbol glfwInit referenced in function main
+C:\GameDev\OpenGL\OpenGL\Dependencies\GLFW\lib-vc2022\glfw3.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+C:\GameDev\OpenGL\OpenGL\bin\x64\Debug\OpenGL.exe : fatal error LNK1120: 1 unresolved externals
