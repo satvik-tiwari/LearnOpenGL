@@ -21,89 +21,7 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
-/*
-struct ShaderProgramSource
-{
-    std::string VertexSource;
-    std::string FragmentSource;
-};
-
-static ShaderProgramSource ParseShader(const std::string& filepath)
-{
-    std::ifstream stream(filepath);
-
-    enum class ShaderType
-    {
-        NONE = -1, VERTEX = 0, FRAGMENT = 1
-    };
-    
-    std::string line;
-    std::stringstream ss[2];
-    ShaderType type = ShaderType::NONE;
-    while (getline(stream, line))
-    {
-        if (line.find("#shader") != std::string::npos)
-        {
-            if (line.find("vertex") != std::string::npos)
-                type = ShaderType::VERTEX;
-
-            else if (line.find("fragment") != std::string::npos)
-                type = ShaderType::FRAGMENT;
-        }
-
-        else
-        {
-            ss[(int)type] << line << '\n';
-        }
-    };
-
-    return { ss[0].str(), ss[1].str() };
-}
-
-static unsigned int CompileShader(unsigned int type, const std::string& source)
-{
-    GLCall(unsigned int id = glCreateShader(type));
-    const char* src = source.c_str();
-    GLCall(glShaderSource(id, 1, &src, nullptr));
-    GLCall(glCompileShader(id));
-
-    //TODO : Error Handling
-    
-    int result;
-    GLCall(glGetShaderiv(id, GL_COMPILE_STATUS, &result));
-    if (result == GL_FALSE)
-    {
-        int length;
-        GLCall(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
-        char* message = (char*)alloca(length * sizeof(char));
-        GLCall(glGetShaderInfoLog(id, length, &length, message));
-        std::cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragement")
-            << " shader!" << std::endl;
-        std::cout << message << std::endl;
-        GLCall(glDeleteShader(id));
-        return 0;
-    }
-
-    return id;
-}
-
-static unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
-{
-    GLCall(unsigned int program = glCreateProgram());
-    unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
-    unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
-
-    GLCall(glAttachShader(program, vs));
-    GLCall(glAttachShader(program, fs));
-    GLCall(glLinkProgram(program));
-    GLCall(glValidateProgram(program));
-
-    GLCall(glDeleteShader(vs));
-    GLCall(glDeleteShader(fs)); 
-
-    return program;
-}
-*/
+#include "tests/TestClearColor.h"
 
 int main(void)
 {
@@ -141,12 +59,7 @@ int main(void)
     glGenBuffers(1, &a);*/
 
     {
-        //float positions[] = {
-        //    -0.5f, -0.5f, 0.0f, 0.0f, //0 bottom left texture coordinate  
-        //     0.5f, -0.5f, 1.0f, 0.0f, //1 bottom right texture coordinate
-        //     0.5f,  0.5f, 1.0f, 1.0f, //2 top right texture coordinate
-        //    -0.5f,  0.5f, 0.0f, 1.0f  //3 top left texture coordinate
-        //};
+        
 
         float positions[] = {
             -50.0f, -50.0f, 0.0f, 0.0f, //0 bottom left texture coordinate     //1 unit = 1 pixel
@@ -163,14 +76,7 @@ int main(void)
         GLCall(glEnable(GL_BLEND));
         GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-        /*unsigned int vao;
-        GLCall(glGenVertexArrays(1, &vao));
-        GLCall(glBindVertexArray(vao));*/
-
-        /*unsigned int buffer;
-        GLCall(glGenBuffers(1, &buffer));
-        GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-        GLCall(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW));*/
+       
 
         VertexArray va;
         VertexBuffer vb(positions, 4 * 4 * sizeof(float)); //4 float 
@@ -244,6 +150,9 @@ int main(void)
 
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init();
+
+        test::Test* current;
+        test::TestClearColor test;
 
         glm::vec3 translationA(200, 200, 0);
         glm::vec3 translationB(500, 300, 0);
