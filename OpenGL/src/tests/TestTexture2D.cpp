@@ -21,44 +21,32 @@ namespace test {
 		   2, 3, 0
 		};
 
-        VertexArray va;
+        GLCall(glEnable(GL_BLEND));
+        GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
+        m_Shader = std::make_unique<Shader>("res/shaders/Basic.shader");
+        m_VAO = std::make_unique<VertexArray>();
+
+        //VertexArray va;
         VertexBuffer vb(positions, 4 * 4 * sizeof(float)); //4 float 
 
         VertexBufferLayout layout;
         layout.Push<float>(2);
         layout.Push<float>(2);
-        va.AddBuffer(vb, layout);
+        m_VAO->AddBuffer(vb, layout);
 
-
-        IndexBuffer ib(indices, 6);
+        m_IB = std::make_unique<IndexBuffer>(indices, 6);
 
         //glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
-        glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f); //progjection matrix is in pixel coordinates instead of what was before 
-        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
+        m_Proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f); //progjection matrix is in pixel coordinates instead of what was before 
+        m_View = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
 
+        m_Shader->Bind();
 
-        glm::vec4 vp(100.0f, 100.0f, 0.0f, 1.0f);
+        m_Shader->SetUniform4f("u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
 
-        glm::vec4 result = proj * vp;
-
-        Shader shader("res/shaders/Basic.shader");
-        shader.Bind();
-
-  
-
-        shader.SetUniform4f("u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
-
-        //GLCall(glBindVertexArray(0));
-
-        Texture texture("res/textures/Decepticon.png");
-        texture.Bind();
-        shader.SetUniform1i("u_Texture", 0);
-
-
-        va.UnBind();
-        vb.UnBind();
-        ib.UnBind();
-        shader.Unbind();
+        m_Texture = std::make_unique<Texture>("res/textures/Decepticon.png");
+        m_Shader->SetUniform1i("u_Texture", 0);
 	}
 
 	TestTexture2D::~TestTexture2D()
@@ -76,28 +64,30 @@ namespace test {
 
         Renderer renderer;
 
+        m_Texture->Bind();
+
         {
             glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationA);
-            glm::mat4 mvp = proj * view * model;
-            shader.Bind();
-            //shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
-            shader.SetUniformMat4f("u_MVP", mvp);
-            renderer.Draw(va, ib, shader);
+            glm::mat4 mvp = m_Proj * m_View * model;
+            m_Shader->Bind();
+            m_Shader->SetUniformMat4f("u_MVP", mvp);
+            renderer.Draw(*m_VAO, *m_IB, *m_Shader);
         }
 
         {
             glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationB);
-            glm::mat4 mvp = proj * view * model;
-            shader.Bind();
-            shader.SetUniformMat4f("u_MVP", mvp);
-            renderer.Draw(va, ib, shader);
+            glm::mat4 mvp = m_Proj * m_View * model;
+            m_Shader->Bind();
+            m_Shader->SetUniformMat4f("u_MVP", mvp);
+            renderer.Draw(*m_VAO, *m_IB, *m_Shader);
         }
 	}
 
 	void TestTexture2D::OnImGuiRender()
 	{
-		ImGui::SliderFloat3("Translation A", &translationA.x, 0.0f, 960.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 960.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+        auto io = ImGui::GetIO();
+		ImGui::SliderFloat3("Translation A", &m_TranslationA.x, 0.0f, 960.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat3("Translation B", &m_TranslationB.x, 0.0f, 960.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 	}
 
