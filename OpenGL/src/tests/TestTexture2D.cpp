@@ -43,7 +43,8 @@ namespace test {
         m_Shader = std::make_unique<Shader>("res/shaders/Basic.shader");
         m_Shader->Bind();
         m_Shader->SetUniform4f("u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
-        m_Texture = std::make_unique<Texture>("res/textures/Decepticon.png");
+        m_Texture1 = std::make_unique<Texture>("res/textures/Decepticon.png");
+        m_Texture2 = std::make_unique<Texture>("res/textures/Autobot.png");
         m_Shader->SetUniform1i("u_Texture", 0);
 	}
 
@@ -57,12 +58,15 @@ namespace test {
 
 	void TestTexture2D::OnRender()
 	{
-		GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+		GLCall(glClearColor(0.01f, 0.01f, 0.01f, 1.0f));
 		GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
         Renderer renderer;
 
-        m_Texture->Bind();
+        m_Texture1->Bind(0);
+        m_Texture2->Bind(1);
+
+        m_Shader->SetUniform1i("u_Texture", 0);
 
         {
             glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationA);
@@ -72,6 +76,7 @@ namespace test {
             renderer.Draw(*m_VAO, *m_IB, *m_Shader);
         }
 
+        m_Shader->SetUniform1i("u_Texture", 1);
         {
             glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationB);
             glm::mat4 mvp = m_Proj * m_View * model;
