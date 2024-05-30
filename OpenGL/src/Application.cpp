@@ -23,6 +23,7 @@
 
 #include "tests/TestClearColor.h"
 #include "tests/TestTexture2D.h"
+#include "tests/TestSolidColorGradient2D.h"
 
 int main(void)
 {
@@ -81,6 +82,7 @@ int main(void)
 
         testMenu->RegisterTest<test::TestClearColor>("Clear Color");
         testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
+        testMenu->RegisterTest <test::TestSolidColorGradient2D>("2D Solid Gradient");
 
         //test::TestClearColor test;
         
