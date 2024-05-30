@@ -19,6 +19,9 @@
     <ClCompile Include="src\vendor\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\vendor\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\tests\TestClearColor.cpp" />
+    <ClCompile Include="src\tests\Test.cpp" />
+    <ClCompile Include="src\tests\TestTexture2D.cpp" />
+    <ClCompile Include="src\tests\TestSolidColorGradient2D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Basic.shader" />
@@ -160,6 +163,7 @@
     <None Include="src\vendor\glm\gtx\vector_angle.inl" />
     <None Include="src\vendor\glm\gtx\vector_query.inl" />
     <None Include="src\vendor\glm\gtx\wrap.inl" />
+    <None Include="res\shaders\Basic1.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h" />
@@ -469,6 +473,8 @@
     <ClInclude Include="src\vendor\imgui\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="src\tests\Test.h" />
     <ClInclude Include="src\tests\TestClearColor.h" />
+    <ClInclude Include="src\tests\TestTexture2D.h" />
+    <ClInclude Include="src\tests\TestSolidColorGradient2D.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="src\vendor\glm\copying.txt" />
